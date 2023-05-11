@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.NucleicCollectionAreaMapper">
+
+    <resultMap type="NucleicCollectionArea" id="NucleicCollectionAreaResult">
+        <result property="ncaId"    column="nca_id"    />
+        <result property="county"    column="county"    />
+        <result property="town"    column="town"    />
+        <result property="community"    column="community"    />
+        <result property="address"    column="address"    />
+        <result property="logitude"    column="logitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="ncStartTime"    column="nc_start_time"    />
+        <result property="ncEndTime"    column="nc_end_time"    />
+        <result property="ncStatus"    column="nc_status"    />
+        <result property="queueNumber"    column="queue_number"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="creator"    column="creator"    />
+        <result property="modifyTime"    column="modify_time"    />
+        <result property="modifier"    column="modifier"    />
+    </resultMap>
+
+    <sql id="selectNucleicCollectionAreaVo">
+        select nca_id, county, town, community, address, logitude, latitude, nc_start_time, nc_end_time, nc_status, queue_number, create_time, creator, modify_time, modifier from nucleic_collection_area
+    </sql>
+
+    <select id="getCollectionList" resultType="Map">
+        SELECT
+               nca.nca_id,
+               concat(nca.town,nca.community,nca.address) as nca_name
+        FROM nucleic_collection_area as nca
+    </select>
+
+    <select id="selectNucleicCollectionAreaList" parameterType="NucleicCollectionArea" resultMap="NucleicCollectionAreaResult">
+        <include refid="selectNucleicCollectionAreaVo"/>
+        <where>
+            <if test="county != null  and county != ''"> and county = #{county}</if>
+            <if test="town != null  and town != ''"> and town = #{town}</if>
+            <if test="community != null  and community != ''"> and community = #{community}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="logitude != null  and logitude != ''"> and logitude = #{logitude}</if>
+            <if test="latitude != null  and latitude != ''"> and latitude = #{latitude}</if>
+            <if test="ncStartTime != null "> and nc_start_time = #{ncStartTime}</if>
+            <if test="ncEndTime != null "> and nc_end_time = #{ncEndTime}</if>
+            <if test="ncStatus != null  and ncStatus != ''"> and nc_status = #{ncStatus}</if>
+            <if test="queueNumber != null  and queueNumber != ''"> and queue_number = #{queueNumber}</if>
+            <if test="creator != null  and creator != ''"> and creator = #{creator}</if>
+            <if test="modifyTime != null "> and modify_time = #{modifyTime}</if>
+            <if test="modifier != null  and modifier != ''"> and modifier = #{modifier}</if>
+        </where>
+    </select>
+
+    <select id="selectNucleicCollectionAreaByNcaId" parameterType="Long" resultMap="NucleicCollectionAreaResult">
+        <include refid="selectNucleicCollectionAreaVo"/>
+        where nca_id = #{ncaId}
+    </select>
+
+    <select id="getPosition" resultMap="NucleicCollectionAreaResult">
+        select * from nucleic_collection_area
+    </select>
+
+    <insert id="insertNucleicCollectionArea" parameterType="NucleicCollectionArea">
+        insert into nucleic_collection_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ncaId != null">nca_id,</if>
+            <if test="county != null">county,</if>
+            <if test="town != null and town != ''">town,</if>
+            <if test="community != null and community != ''">community,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="logitude != null and logitude != ''">logitude,</if>
+            <if test="latitude != null and latitude != ''">latitude,</if>
+            <if test="ncStartTime != null">nc_start_time,</if>
+            <if test="ncEndTime != null">nc_end_time,</if>
+            <if test="ncStatus != null">nc_status,</if>
+            <if test="queueNumber != null">queue_number,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="creator != null">creator,</if>
+            <if test="modifyTime != null">modify_time,</if>
+            <if test="modifier != null">modifier,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ncaId != null">#{ncaId},</if>
+            <if test="county != null">#{county},</if>
+            <if test="town != null and town != ''">#{town},</if>
+            <if test="community != null and community != ''">#{community},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="logitude != null and logitude != ''">#{logitude},</if>
+            <if test="latitude != null and latitude != ''">#{latitude},</if>
+            <if test="ncStartTime != null">#{ncStartTime},</if>
+            <if test="ncEndTime != null">#{ncEndTime},</if>
+            <if test="ncStatus != null">#{ncStatus},</if>
+            <if test="queueNumber != null">#{queueNumber},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="creator != null">#{creator},</if>
+            <if test="modifyTime != null">#{modifyTime},</if>
+            <if test="modifier != null">#{modifier},</if>
+         </trim>
+    </insert>
+
+    <update id="updateNucleicCollectionArea" parameterType="NucleicCollectionArea">
+        update nucleic_collection_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="county != null">county = #{county},</if>
+            <if test="town != null and town != ''">town = #{town},</if>
+            <if test="community != null and community != ''">community = #{community},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="logitude != null and logitude != ''">logitude = #{logitude},</if>
+            <if test="latitude != null and latitude != ''">latitude = #{latitude},</if>
+            <if test="ncStartTime != null">nc_start_time = #{ncStartTime},</if>
+            <if test="ncEndTime != null">nc_end_time = #{ncEndTime},</if>
+            <if test="ncStatus != null">nc_status = #{ncStatus},</if>
+            <if test="queueNumber != null">queue_number = #{queueNumber},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="creator != null">creator = #{creator},</if>
+            <if test="modifyTime != null">modify_time = #{modifyTime},</if>
+            <if test="modifier != null">modifier = #{modifier},</if>
+        </trim>
+        where nca_id = #{ncaId}
+    </update>
+
+    <delete id="deleteNucleicCollectionAreaByNcaId" parameterType="Long">
+        delete from nucleic_collection_area where nca_id = #{ncaId}
+    </delete>
+
+    <delete id="deleteNucleicCollectionAreaByNcaIds" parameterType="String">
+        delete from nucleic_collection_area where nca_id in
+        <foreach item="ncaId" collection="array" open="(" separator="," close=")">
+            #{ncaId}
+        </foreach>
+    </delete>
+</mapper>

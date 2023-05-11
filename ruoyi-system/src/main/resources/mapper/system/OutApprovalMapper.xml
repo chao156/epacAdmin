@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OutApprovalMapper">
+
+    <resultMap type="OutApproval" id="OutApprovalResult">
+        <result property="outId"    column="out_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="community"    column="community"    />
+        <result property="outReason"    column="out_reason"    />
+        <result property="outDestination"    column="out_destination"    />
+        <result property="outTime"    column="out_time"    />
+        <result property="returnTime"    column="return_time"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="certificate"    column="certificate"    />
+        <result property="outType"    column="out_type"    />
+    </resultMap>
+
+    <sql id="selectOutApprovalVo">
+        select out_id, user_id, user_name, community, out_reason, out_destination, out_time, return_time, status, remark, certificate, out_type from out_approval
+    </sql>
+
+    <select id="selectOutApprovalList" parameterType="OutApproval" resultMap="OutApprovalResult">
+        <include refid="selectOutApprovalVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="community != null  and community != ''"> and community like concat('%', #{community}, '%')</if>
+            <if test="outReason != null  and outReason != ''"> and out_reason = #{outReason}</if>
+            <if test="outDestination != null  and outDestination != ''"> and out_destination = #{outDestination}</if>
+            <if test="outTime != null "> and out_time = #{outTime}</if>
+            <if test="returnTime != null "> and return_time = #{returnTime}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="certificate != null  and certificate != ''"> and certificate = #{certificate}</if>
+            <if test="outType != null  and outType != ''"> and out_type = #{outType}</if>
+        </where>
+    </select>
+
+    <select id="selectOutApprovalByOutId" parameterType="Long" resultMap="OutApprovalResult">
+        <include refid="selectOutApprovalVo"/>
+        where out_id = #{outId}
+    </select>
+
+    <insert id="insertOutApproval" parameterType="OutApproval" useGeneratedKeys="true" keyProperty="outId">
+        insert into out_approval
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="community != null">community,</if>
+            <if test="outReason != null">out_reason,</if>
+            <if test="outDestination != null">out_destination,</if>
+            <if test="outTime != null">out_time,</if>
+            <if test="returnTime != null">return_time,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="certificate != null">certificate,</if>
+            <if test="outType != null">out_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="community != null">#{community},</if>
+            <if test="outReason != null">#{outReason},</if>
+            <if test="outDestination != null">#{outDestination},</if>
+            <if test="outTime != null">#{outTime},</if>
+            <if test="returnTime != null">#{returnTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="certificate != null">#{certificate},</if>
+            <if test="outType != null">#{outType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOutApproval" parameterType="OutApproval">
+        update out_approval
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="community != null">community = #{community},</if>
+            <if test="outReason != null">out_reason = #{outReason},</if>
+            <if test="outDestination != null">out_destination = #{outDestination},</if>
+            <if test="outTime != null">out_time = #{outTime},</if>
+            <if test="returnTime != null">return_time = #{returnTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="certificate != null">certificate = #{certificate},</if>
+            <if test="outType != null">out_type = #{outType},</if>
+        </trim>
+        where out_id = #{outId}
+    </update>
+
+    <delete id="deleteOutApprovalByOutId" parameterType="Long">
+        delete from out_approval where out_id = #{outId}
+    </delete>
+
+    <delete id="deleteOutApprovalByOutIds" parameterType="String">
+        delete from out_approval where out_id in
+        <foreach item="outId" collection="array" open="(" separator="," close=")">
+            #{outId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRegionMapper">
+
+    <resultMap type="SysRegion" id="SysRegionResult">
+        <result property="regionId"    column="region_id"    />
+        <result property="regionCode"    column="region_code"    />
+        <result property="regionParentCode"    column="region_parent_code"    />
+        <result property="regionName"    column="region_name"    />
+        <result property="regionLevel"    column="region_level"    />
+        <result property="regionLeader"    column="region_leader"    />
+        <result property="regionStatus"    column="region_status"    />
+        <result property="town" column="town_name" />
+    </resultMap>
+
+    <sql id="selectSysRegionVo">
+        select region_id, region_code, region_parent_code, region_name, region_level, region_leader, region_status from sys_region
+    </sql>
+
+    <select id="getCommInfoFromRegion" resultMap="SysRegionResult">
+        select sr.*,(select region_name from sys_region sys where sys.region_code = sr.region_parent_code) as town_name  from sys_region sr where sr.region_level = 3
+    </select>
+
+    <select id="getCountyName" resultType="String">
+        select region_name from sys_region where region_level = '1'
+    </select>
+
+    <select id="selectSysRegionList" parameterType="SysRegion" resultMap="SysRegionResult">
+        <include refid="selectSysRegionVo"/>
+        <where>
+            <if test="regionCode != null  and regionCode != ''"> and region_code = #{regionCode} or region_parent_code = #{regionCode}</if>
+            <if test="regionParentCode != null  and regionParentCode != ''"> and region_parent_code = #{regionParentCode}</if>
+            <if test="regionName != null  and regionName != ''"> and region_name like concat('%', #{regionName}, '%')</if>
+            <if test="regionLevel != null  and regionLevel != ''"> and region_level = #{regionLevel}</if>
+            <if test="regionLeader != null  and regionLeader != ''"> and region_leader = #{regionLeader}</if>
+            <if test="regionStatus != null  and regionStatus != ''"> and region_status = #{regionStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectSysRegionByRegionId" parameterType="Long" resultMap="SysRegionResult">
+        <include refid="selectSysRegionVo"/>
+        where region_id = #{regionId}
+    </select>
+
+
+    <select id="selectSysRegionByRegionCode" parameterType="String" resultMap="SysRegionResult">
+        <include refid="selectSysRegionVo"/>
+        where region_code = #{regionCode}
+    </select>
+
+    <insert id="insertSysRegion" parameterType="SysRegion" useGeneratedKeys="true" keyProperty="regionId">
+        insert into sys_region
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="regionCode != null and regionCode != ''">region_code,</if>
+            <if test="regionParentCode != null and regionParentCode != ''">region_parent_code,</if>
+            <if test="regionName != null and regionName != ''">region_name,</if>
+            <if test="regionLevel != null and regionLevel != ''">region_level,</if>
+            <if test="regionLeader != null and regionLeader != ''">region_leader,</if>
+            <if test="regionStatus != null">region_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="regionCode != null and regionCode != ''">#{regionCode},</if>
+            <if test="regionParentCode != null and regionParentCode != ''">#{regionParentCode},</if>
+            <if test="regionName != null and regionName != ''">#{regionName},</if>
+            <if test="regionLevel != null and regionLevel != ''">#{regionLevel},</if>
+            <if test="regionLeader != null and regionLeader != ''">#{regionLeader},</if>
+            <if test="regionStatus != null">#{regionStatus},</if>
+         </trim>
+    </insert>
+
+
+
+    <update id="updateSysRegion" parameterType="SysRegion">
+        update sys_region
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="regionCode != null and regionCode != ''">region_code = #{regionCode},</if>
+            <if test="regionParentCode != null and regionParentCode != ''">region_parent_code = #{regionParentCode},</if>
+            <if test="regionName != null and regionName != ''">region_name = #{regionName},</if>
+            <if test="regionLevel != null and regionLevel != ''">region_level = #{regionLevel},</if>
+            <if test="regionLeader != null and regionLeader != ''">region_leader = #{regionLeader},</if>
+            <if test="regionStatus != null">region_status = #{regionStatus},</if>
+        </trim>
+        where region_id = #{regionId}
+    </update>
+
+    <delete id="deleteSysRegionByRegionId" parameterType="Long">
+        delete from sys_region where region_id = #{regionId}
+    </delete>
+
+    <delete id="deleteSysRegionByRegionIds" parameterType="String">
+        delete from sys_region where region_id in
+        <foreach item="regionId" collection="array" open="(" separator="," close=")">
+            #{regionId}
+        </foreach>
+    </delete>
+
+    <select id="getTownList" resultMap="SysRegionResult">
+        select region_code,region_name from sys_region where region_level = 2
+    </select>
+
+    <select id="getCommList" resultMap="SysRegionResult">
+        select region_code,region_name from sys_region where region_level = 3 and region_parent_code = #{regionId};
+    </select>
+</mapper>

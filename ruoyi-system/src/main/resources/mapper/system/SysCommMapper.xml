@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysCommMapper">
+
+    <resultMap type="SysComm" id="SysCommResult">
+        <result property="commId"    column="comm_id"    />
+        <result property="commCode"    column="comm_code"    />
+        <result property="county"    column="county"    />
+        <result property="town"    column="town"    />
+        <result property="commName"    column="comm_name"    />
+        <result property="commNum"    column="comm_num"    />
+        <result property="commStatus"    column="comm_status"    />
+        <result property="commContStatus"    column="comm_cont_status"    />
+    </resultMap>
+
+    <sql id="selectSysCommVo">
+        select comm_id, comm_code, county, town, comm_name, comm_num, comm_status, comm_cont_status from sys_comm
+    </sql>
+
+    <insert id="importCommInfo" parameterType="SysComm">
+        insert into sys_comm(
+            comm_code,
+            county,
+            town,
+            comm_name,
+            comm_status,
+            comm_cont_status
+        )values
+            <foreach collection="list" item="comm" index="index" separator=",">(
+                #{comm.commCode},
+                #{comm.county},
+                #{comm.town},
+                #{comm.commName},
+                #{comm.commStatus},
+                #{comm.commContStatus}
+                )
+            </foreach>
+
+    </insert>
+
+    <select id="selectSysCommList" parameterType="SysComm" resultMap="SysCommResult">
+        <include refid="selectSysCommVo"/>
+        <where>
+            <if test="commCode != null  and commCode != ''"> and comm_code = #{commCode}</if>
+            <if test="county != null  and county != ''"> and county like concat('%', #{county}, '%')</if>
+            <if test="town != null  and town != ''"> and town like concat('%', #{town}, '%')</if>
+            <if test="commName != null  and commName != ''"> and comm_name like concat('%', #{commName}, '%')</if>
+            <if test="commNum != null  and commNum != ''"> and comm_num = #{commNum}</if>
+            <if test="commStatus != null  and commStatus != ''"> and comm_status = #{commStatus}</if>
+            <if test="commContStatus != null  and commContStatus != ''"> and comm_cont_status = #{commContStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectSysCommByCommId" parameterType="Long" resultMap="SysCommResult">
+        <include refid="selectSysCommVo"/>
+        where comm_id = #{commId}
+    </select>
+
+    <insert id="insertSysComm" parameterType="SysComm">
+        insert into sys_comm
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="commId != null">comm_id,</if>
+            <if test="commCode != null and commCode != ''">comm_code,</if>
+            <if test="county != null and county != ''">county,</if>
+            <if test="town != null and town != ''">town,</if>
+            <if test="commName != null and commName != ''">comm_name,</if>
+            <if test="commNum != null">comm_num,</if>
+            <if test="commStatus != null">comm_status,</if>
+            <if test="commContStatus != null">comm_cont_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="commId != null">#{commId},</if>
+            <if test="commCode != null and commCode != ''">#{commCode},</if>
+            <if test="county != null and county != ''">#{county},</if>
+            <if test="town != null and town != ''">#{town},</if>
+            <if test="commName != null and commName != ''">#{commName},</if>
+            <if test="commNum != null">#{commNum},</if>
+            <if test="commStatus != null">#{commStatus},</if>
+            <if test="commContStatus != null">#{commContStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysComm" parameterType="SysComm">
+        update sys_comm
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="commCode != null and commCode != ''">comm_code = #{commCode},</if>
+            <if test="county != null and county != ''">county = #{county},</if>
+            <if test="town != null and town != ''">town = #{town},</if>
+            <if test="commName != null and commName != ''">comm_name = #{commName},</if>
+            <if test="commNum != null">comm_num = #{commNum},</if>
+            <if test="commStatus != null">comm_status = #{commStatus},</if>
+            <if test="commContStatus != null">comm_cont_status = #{commContStatus},</if>
+        </trim>
+        where comm_id = #{commId}
+    </update>
+
+    <delete id="deleteSysCommByCommId" parameterType="Long">
+        delete from sys_comm where comm_id = #{commId}
+    </delete>
+
+    <delete id="deleteSysCommByCommIds" parameterType="String">
+        delete from sys_comm where comm_id in
+        <foreach item="commId" collection="array" open="(" separator="," close=")">
+            #{commId}
+        </foreach>
+    </delete>
+</mapper>
